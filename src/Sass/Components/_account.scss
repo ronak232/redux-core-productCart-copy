@@ -46,7 +46,8 @@
     &-title {
       font-size: 42px;
       font-weight: 600;
-      font-family: $font-montserrat;
+      font-family: $playball-font;
+      letter-spacing: 0.3rem;
       margin-top: 22px;
       color: $blue-color;
     }
@@ -164,6 +165,11 @@
     display: flex;
     align-items: center;
     gap: 4px;
+
+    button {
+      background: transparent;
+      padding: 0;
+    }
   }
 }
 
@@ -174,9 +180,50 @@
   span {
     font-size: 16px;
     font-weight: 500;
-    font-family: $RobotoSlab;
+    font-family: $font-montserrat;
     display: flex;
     align-items: center;
     gap: 4px;
+    button {
+      background: transparent;
+      padding: 0;
+    }
   }
+}
+
+.login-btn {
+  button {
+    background: rgb(56, 63, 220);
+    border-radius: 5px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 500;
+    font-family: $font-montserrat;
+    color: $white-color;
+  }
+}
+
+.login-error-mssg {
+  background-color: red;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  transition: all 0.5s ease-in-out;
+  color: $black-color;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.login-success-mssg {
+  width: 100%;
+  background-color: rgb(77, 255, 77);
+  border-radius: 6px;
+  text-align: left;
+  padding: 10px;
+  transition: all 0.5s ease-in-out;
+  color:  $black-color;
+  font-weight: 400;
+  font-size: 16px;
 }

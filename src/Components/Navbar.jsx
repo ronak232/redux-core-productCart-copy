@@ -7,20 +7,16 @@ import { RxCross1 } from "react-icons/rx";
 import { RiShoppingCart2Line } from "react-icons/ri";
 import { MdArrowDropDown } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
+import { getAuth } from "firebase/auth";
 
 function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
   const [mobileToggle, setmobileToggle] = useState(false);
+  const auth = getAuth();
+  console.log(auth.currentUser.email)
 
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
-
-  // const handleSearchbar = () =>{
-  //  const hideSearchBar = document.querySelector(".product__search")
-  //  document.addEventListener("click", function () {
-
-  //  })
-  // }
 
   return (
     <header>
@@ -70,7 +66,7 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">
                   <h5>
-                    <small>Hello, sign in</small>
+                    <small>Hello, {auth?.currentUser?.displayName}</small>
                   </h5>
                   My Account
                 </div>

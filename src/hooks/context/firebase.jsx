@@ -1,5 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { getDatabase, set, ref } from "firebase/database";
 import { createContext, useContext } from "react";
 
@@ -24,16 +28,22 @@ export const useFirebaseAuth = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = ({ children }) => {
   // create new user with credentials for signup in database whenever new user singup...
-  const signUpUser = async (email, passowrd, confirmPssd, username) => {
+  const registerNewUser = async (email, passowrd, confirmPssd, username) => {
     return await createUserWithEmailAndPassword(
       firebaseAuth,
       email,
       passowrd,
       confirmPssd,
       username
-    ).then((val) => {
-      alert("Successfully!", val);
-    });
+    )
+      .then((registerdUserCredentials) => {
+        console.log("register", registerdUserCredentials);
+        return registerdUserCredentials;
+      })
+      .catch((err) => {
+        console.log(err);
+        throw err;
+      });
   };
 
   // storing new user in database...
@@ -41,15 +51,23 @@ export const FirebaseProvider = ({ children }) => {
     set(ref(firebaseDatabase, key), data);
   };
 
-  const loginUser = async (email, passowrd) =>{
-      return await signInWithEmailAndPassword(firebaseAuth, email, passowrd).then()
-  }
-
-
-
+  // Login user after registration.
+  const loginUser = async (email, password) => {
+    return await signInWithEmailAndPassword(firebaseAuth, email, password)
+      .then((userCredential) => {
+        console.log("Login successful:", userCredential);
+        return userCredential; // through this we can Return the user credential if needed to the caller function to passed the resolved.
+      })
+      .catch((error) => {
+        console.error("Login failed:", error);
+        throw error; // Throw the error to handle it in the caller
+      });
+  };
 
   return (
-    <FirebaseContext.Provider value={{ signUpUser, putUserData }}>
+    <FirebaseContext.Provider
+      value={{ registerNewUser, putUserData, loginUser }}
+    >
       {children}
     </FirebaseContext.Provider>
   );

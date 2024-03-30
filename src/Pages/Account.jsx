@@ -2,14 +2,15 @@ import React from "react";
 import { TfiEmail, TfiLock } from "react-icons/tfi";
 import { Button } from "../Styles/Button.style";
 import { LiaUserCircle } from "react-icons/lia";
-import { ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loginlogo from "../Images/login-logo.png";
 import { useFirebaseAuth } from "../hooks/context/firebase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Account() {
-  const { signUpUser, putUserData } = useFirebaseAuth();
+  const { registerNewUser } = useFirebaseAuth();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
@@ -18,6 +19,7 @@ function Account() {
       confirmPssd: "",
       email: "",
     },
+
     validationSchema: Yup.object({
       username: Yup.string()
         .max(12, "Username should be 12 characters or less!")
@@ -29,6 +31,7 @@ function Account() {
         .required("Required Field"),
       email: Yup.string().email("Invalid email").required("Required Field"),
     }),
+
     validate: (values) => {
       const errors = {};
       if (!values.confirmPssd) {
@@ -38,24 +41,23 @@ function Account() {
       }
       return errors;
     },
-    onSubmit: async (values, { resetForm }) => {
-      try {
-        await signUpUser(
-          values.email,
-          values.password,
-          values.username,
-          values.confirmPssd
-        ).then(() => {
-          window
-            .open("/register", "_blank", "rel=noopener noreferrer")
-            .catch(() => {
-              alert("Something happened!");
-            });
+
+    onSubmit: async (values) => {
+      await registerNewUser(
+        values.email,
+        values.password,
+        values.username,
+        values.confirmPssd
+      )
+        .then(() => {
+          setTimeout(() =>{
+            navigate("/login");
+          }, 1500)
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      } catch {
-        <ErrorMessage />;
-      }
-      resetForm();
+      formik.resetForm();
     },
   });
 
@@ -70,10 +72,10 @@ function Account() {
                 src={Loginlogo}
                 alt="no-img"
               />
-              <h1 className="store-account__card-title">Login</h1>
+              <h1 className="store-account__card-title">CartZilla</h1>
               <div className="store-account__card-link">
                 <h3 className="store-account__card-link-text">
-                  or Login with :
+                  Register with :
                 </h3>
                 <div className="store-account__card-loginoptions">
                   <button
@@ -89,7 +91,7 @@ function Account() {
                     <i class="bg-grey fa-brands fa-facebook-f"></i>
                   </button>
                   <button
-                    className="store-account__card-link-media  bg-twitter"
+                    className="store-account__card-link-media bg-twitter"
                     href="/"
                   >
                     <i class="bg-grey fa-brands fa-twitter"></i>
@@ -187,17 +189,18 @@ function Account() {
                         fontSize="18px"
                         type="submit"
                       >
-                        Sign In
+                        Sign Up
                       </Button>
                     </Link>
                   </div>
                 </form>
               </div>
               <div className="user-registration">
-                <span>Already Register?
-                <Link to="/login">
-                  <Button>Register!</Button>
-                </Link>
+                <span>
+                  Already Register?
+                  <Link to="/login">
+                    <button>Login</button>
+                  </Link>
                 </span>
               </div>
             </div>

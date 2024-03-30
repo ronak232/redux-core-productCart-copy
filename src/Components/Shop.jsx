@@ -15,15 +15,12 @@ function Shop({
   querySearch,
   productSearch,
   loading,
-  cartItems,
 }) {
   const [paginatePages, setPaginatePages] = useState(0); //Current page
 
   const handlePageChange = (index) => {
     setPaginatePages(index);
   };
-
-  const ifProductPresent = cartItems.find((item) => item.id === cartFilter.id);
 
   const searchResult = querySearch
     ? productSearch.filter((item) =>
@@ -125,6 +122,7 @@ function Shop({
         </div>
         {!loading && (
           <div className="page-btn">
+            <button></button>
             {allProducts.map((_, index) => {
               return (
                 <button

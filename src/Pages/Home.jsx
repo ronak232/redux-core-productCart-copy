@@ -11,8 +11,8 @@ import { RiArrowUpSLine } from "react-icons/ri";
 import Store from "../Components/Store";
 import OffersBanner from "../Components/OffersBanner";
 
-function Home() { 
-  return ( 
+function Home() {
+  return (
     <>
       <section>
         <div className="product__banner">
@@ -38,10 +38,7 @@ function Home() {
                       & Accessories collection
                     </h5>
 
-                    <a
-                      className="product__banner-btn-red"
-                      href="/"
-                    >
+                    <a className="product__banner-btn-red" href="/">
                       Shop Now
                       <RiArrowUpSLine className="arrow" />
                     </a>
@@ -49,7 +46,7 @@ function Home() {
                   <div className="product__banner--slide-images">
                     <img
                       className="product__banner--slide-img"
-                      src="https://cartzilla.createx.studio/img/home/hero-slider/06.jpg"
+                      src="https://img.freepik.com/free-vector/home-screen-concept-illustration_114360-4703.jpg?t=st=1711628645~exp=1711632245~hmac=2363b339533d9b020e36285af293f6e857eedf39da8e8e569629a5d633661b13&w=740"
                       alt=""
                     />
                   </div>
@@ -63,10 +60,7 @@ function Home() {
                     <h5 className="product__banner--text-light">
                       Choose between top brands
                     </h5>
-                    <a
-                      className="product__banner-btn-red"
-                      href="/"
-                    >
+                    <a className="product__banner-btn-red" href="/">
                       Shop Now
                       <RiArrowUpSLine className="arrow" />
                     </a>
@@ -162,7 +156,7 @@ function Home() {
             </Link>
           </div>
         </div>
-        <OffersBanner/>
+        <OffersBanner />
       </div>
       <LogoSlider />
       <Store />

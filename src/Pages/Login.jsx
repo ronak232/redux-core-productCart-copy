@@ -1,60 +1,51 @@
 import React, { useState } from "react";
 import { TfiEmail, TfiLock } from "react-icons/tfi";
-import { Button } from "../Styles/Button.style";
-import { LiaUserCircle } from "react-icons/lia";
-import { ErrorMessage, useFormik } from "formik";
+import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loginlogo from "../Images/login-logo.png";
 import { useFirebaseAuth } from "../hooks/context/firebase";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function LoginUser() {
-  const { signUpUser, putUserData } = useFirebaseAuth();
+  const { loginUser } = useFirebaseAuth();
+  const [loginError, setLoginError] = useState(null);
+  const navigate = useNavigate();
+  let isUserLoggedInSuccess = false;
 
   const formik = useFormik({
     initialValues: {
-      username: "",
       password: "",
-      confirmPssd: "",
       email: "",
     },
     validationSchema: Yup.object({
-      username: Yup.string()
-        .max(12, "Username should be 12 characters or less!")
-        .required("Required Field"),
-
-      password: Yup.string()
-        .min(8, "Atleast 8 characters")
-        .max(12, "Password must be less than 12!")
-        .required("Required Field"),
+      password: Yup.string().required("Required Field"),
       email: Yup.string().email("Invalid email").required("Required Field"),
     }),
-    validate: (values) => {
-      const errors = {};
-      if (!values.confirmPssd) {
-        errors.confirmPssd = "Required Field";
-      } else if (values.confirmPssd !== values.password) {
-        errors.confirmPssd = "Password does not match";
-      }
-      return errors;
-    },
-    onSubmit: async () => {
+    onSubmit: () => {
       try {
-        await signUpUser(
-          formik.values.email,
-          formik.values.password,
-          formik.values.username,
-          formik.values.confirmPssd
-        ).then(() => {
-          window
-            .open("/register", "_blank", "rel=noopener noreferrer")
-            .catch(() => {
-              alert("Something happened!");
-            });
-        });
-      } catch {
-        <ErrorMessage />;
+        loginUser(formik.values.email, formik.values.password)
+          .then(() => {
+            // If login successful, set the flag to true
+            isUserLoggedInSuccess = true;
+            // Redirect after a delay
+            setTimeout(() => {
+              navigate("/");
+            }, 1200);
+          })
+          .catch((err) => {
+            // If login failed, set the error message
+            if (err.code === "auth/invalid-credential") {
+              setTimeout(() => {
+                setLoginError(err);
+              }, 700);
+            }
+          });
+      } catch (error) {
+        console.error("Error occurred during login:", error);
       }
+      // Reset the form input fields after all asynchronous operations
+      formik.resetForm();
+      console.log("User logged in:", isUserLoggedInSuccess);
     },
   });
 
@@ -69,7 +60,8 @@ function LoginUser() {
                 src={Loginlogo}
                 alt="no-img"
               />
-              <h1 className="store-account__card-title">Login</h1>
+
+              <h1 className="store-account__card-title">CartZilla</h1>
               <div className="store-account__card-link">
                 <h3 className="store-account__card-link-text">
                   or Login with :
@@ -86,6 +78,13 @@ function LoginUser() {
                   </button>
                 </div>
               </div>
+              {loginError !== null ? (
+                <p className="login-success-mssg">Successfull Logged In</p>
+              ) : (
+                <p className="login-error-mssg">
+                  Email-id or Password does not match.
+                </p>
+              )}
               <div className="store-account__form">
                 <form
                   className="store-account__form-control"
@@ -127,12 +126,14 @@ function LoginUser() {
                       ""
                     )}
                   </div>
-
+                  <div className="login-btn">
+                    <button type="submit">Login</button>
+                  </div>
                   <div className="user-login">
                     <span>
-                      Register With Us
+                      Register with us
                       <Link to="/account">
-                        <Button>Sign Up</Button>
+                        <button>Register Now</button>
                       </Link>
                     </span>
                   </div>

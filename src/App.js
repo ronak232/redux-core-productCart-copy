@@ -125,7 +125,7 @@ function App() {
               />
             }
           />
-          <Route path="/account" element={<Account />} />
+          <Route exact path="/account" element={<Account />} />
           <Route
             path="/shop"
             element={
@@ -165,7 +165,6 @@ function App() {
               />
             }
           />
-          <Route path="/register" element={<UserRegistration/>}/>
           <Route path="/login" element={<LoginUser/>}/>
         </Routes>
         {<Footer />}
