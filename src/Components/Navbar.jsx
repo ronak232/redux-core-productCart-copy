@@ -8,12 +8,12 @@ import { RiShoppingCart2Line } from "react-icons/ri";
 import { MdArrowDropDown } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { getAuth } from "firebase/auth";
+import { useFirebaseAuth } from "../hooks/context/firebase";
 
 function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
   const [mobileToggle, setmobileToggle] = useState(false);
-  const auth = getAuth();
-  console.log(auth.currentUser.email)
-
+  const { user } = useFirebaseAuth();
+  
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
@@ -62,11 +62,15 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
                   )}
                 </button>
               </div>
-              <Link className="main-navbar-user" to="/account">
+              <Link className="main-navbar-user" to={user ? "/dashboard" : "/login"}>
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">
                   <h5>
-                    <small>Hello, {auth?.currentUser?.displayName}</small>
+                  Hello,
+                    {user ? <small>
+                      {" "}
+                      {String(getAuth()?.currentUser?.email)?.match(/^[a-zA-Z]+/)[0]}
+                    </small> : <small>Sign In</small>}
                   </h5>
                   My Account
                 </div>

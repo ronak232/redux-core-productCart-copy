@@ -3,9 +3,10 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
 import { getDatabase, set, ref } from "firebase/database";
-import { createContext, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB5TFzHslTZ7-Rk5Rg6ZCWHVE7w6fuAo7Q",
@@ -27,6 +28,20 @@ const FirebaseContext = createContext(null);
 export const useFirebaseAuth = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  // const [signOutUser, setSignOutUser] = useState(null);
+
+  const currentUserAuth = () => {
+    const currentUser = firebaseAuth.onAuthStateChanged((user) => {
+      setUser(user);
+    });
+    return currentUser;
+  };
+
+  useEffect(() => {
+    currentUserAuth();
+  }, []);
+
   // create new user with credentials for signup in database whenever new user singup...
   const registerNewUser = async (email, passowrd, confirmPssd, username) => {
     return await createUserWithEmailAndPassword(
@@ -64,9 +79,32 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
+  const isUserLoggedIn = () => {
+    return onAuthStateChanged((user) => {
+      if (user != null) {
+        return String(firebaseAuth?.currentUser()?.email())?.match(
+          /^[a-zA-Z]+/
+        )[0];
+      } else {
+        return user;
+      }
+    });
+  };
+
+  const signOutCurrentUser = () => {
+    return firebaseAuth.signOut(firebaseAuth);
+  };
+
   return (
     <FirebaseContext.Provider
-      value={{ registerNewUser, putUserData, loginUser }}
+      value={{
+        registerNewUser,
+        putUserData,
+        loginUser,
+        isUserLoggedIn,
+        user,
+        signOutCurrentUser,
+      }}
     >
       {children}
     </FirebaseContext.Provider>

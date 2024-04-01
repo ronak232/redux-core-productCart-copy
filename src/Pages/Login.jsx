@@ -29,16 +29,16 @@ function LoginUser() {
             isUserLoggedInSuccess = true;
             // Redirect after a delay
             setTimeout(() => {
-              navigate("/");
+              navigate("/dashboard");
             }, 1200);
           })
           .catch((err) => {
             // If login failed, set the error message
-            if (err.code === "auth/invalid-credential") {
-              setTimeout(() => {
-                setLoginError(err);
-              }, 700);
-            }
+            setTimeout(() => {
+              if (err.code === "auth/invalid-credential") {
+                setLoginError(err.code);
+              }
+            }, 900);
           });
       } catch (error) {
         console.error("Error occurred during login:", error);
@@ -78,11 +78,9 @@ function LoginUser() {
                   </button>
                 </div>
               </div>
-              {loginError !== null ? (
-                <p className="login-success-mssg">Successfull Logged In</p>
-              ) : (
+              {loginError && (
                 <p className="login-error-mssg">
-                  Email-id or Password does not match.
+                  Please check your email-id or password and try again.
                 </p>
               )}
               <div className="store-account__form">

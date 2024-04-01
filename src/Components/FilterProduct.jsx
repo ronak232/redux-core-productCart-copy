@@ -1,22 +1,22 @@
 import { useCallback, useEffect, useState } from "react";
 import paginate from "../utils/paginate";
 
-function FilterProduct({ setcartFilter, allProducts }) {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
+function FilterProduct({ setcartFilter, cartFilter, allProducts }) {
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [paginationOnFilter, setPaginationOnFilter] = useState(1)
   // To filter only the product categories
   const allCategories = [
     ...new Set(allProducts?.flat()?.map((item) => item?.category)), //flat() method is used to flatten the paginated arrays into a single array before applying the filtering logic.
   ];
 
   // To calculate the maximum price of the product.
-  const productPriceMaxValue = allProducts?.reduce(
+  const productPriceMaxValue = cartFilter?.reduce(
     (prev, curr) => (prev.price > curr.price ? prev : curr),
     1
   );
 
   // To calculate the minimum price of the product.
-  const productPriceMinValue = allProducts?.reduce(
+  const productPriceMinValue = cartFilter?.reduce(
     (prev, curr) => (prev.price < curr.price ? prev : curr),
     1
   );
@@ -41,8 +41,9 @@ function FilterProduct({ setcartFilter, allProducts }) {
   );
 
   const clearAllFilter = () => {
-    setSelectedCategory(null);
-    setcartFilter(allProducts.flat(5));
+    console.log(cartFilter);
+    setSelectedCategory([]);
+    setPaginationOnFilter(paginate(paginationOnFilter));
   };
 
   return (

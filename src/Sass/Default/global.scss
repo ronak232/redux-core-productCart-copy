@@ -16,6 +16,9 @@ body {
   font-family: "Open Sans", sans-serif;
   color: $black-color;
   background-color: $white-color;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 body::-webkit-scrollbar {

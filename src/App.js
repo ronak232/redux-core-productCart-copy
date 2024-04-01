@@ -15,8 +15,9 @@ import { ThemeContext } from "./hooks/ContextApi";
 import { useContext } from "react";
 import ProductDetails from "./Pages/ProductDetails";
 import paginate from "./utils/paginate";
-import UserRegistration from "./Pages/UserRegistration";
 import LoginUser from "./Pages/Login";
+import Privateroute from "./utils/Privaterouting/Privateroute";
+import Dashboard from "./Pages/Dashboard";
 
 function App() {
   const theme = useContext(ThemeContext);
@@ -84,8 +85,8 @@ function App() {
     );
   };
 
-  const APICall = () => {
-    axios
+  const APICall = async () => {
+    await axios
       .get("https://dummyjson.com/products?limit=100")
       .then((response) => response.data.products)
       .then((data) => {
@@ -165,8 +166,17 @@ function App() {
               />
             }
           />
-          <Route path="/login" element={<LoginUser/>}/>
+          <Route
+            path="/dashboard"
+            element={
+              <Privateroute>
+                <Dashboard />
+              </Privateroute>
+            }
+          />
+          <Route path="/login" element={<LoginUser />} />
         </Routes>
+
         {<Footer />}
       </Router>
     </div>
