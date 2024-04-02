@@ -13,7 +13,6 @@ import { useFirebaseAuth } from "../hooks/context/firebase";
 function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
   const [mobileToggle, setmobileToggle] = useState(false);
   const { user } = useFirebaseAuth();
-  
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
@@ -62,15 +61,23 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
                   )}
                 </button>
               </div>
-              <Link className="main-navbar-user" to={user ? "/dashboard" : "/login"}>
+              <Link
+                className="main-navbar-user"
+                to={user ? "/dashboard" : "/login"}
+              >
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">
                   <h5>
-                  Hello,
-                    {user ? <small>
-                      {" "}
-                      {String(getAuth()?.currentUser?.email)?.match(/^[a-zA-Z]+/)[0]}
-                    </small> : <small>Sign In</small>}
+                    Hello,
+                    {user ? (
+                      <small>
+                        {" "}
+                        {/* {String(getAuth()?.currentUser?.email)?.match(/^[a-zA-Z]+/)[0]} */}
+                        {String(getAuth()?.currentUser?.displayName)}
+                      </small>
+                    ) : (
+                      <small>Sign In</small>
+                    )}
                   </h5>
                   My Account
                 </div>

@@ -46,8 +46,7 @@ function Account() {
       await registerNewUser(
         values.email,
         values.password,
-        values.username,
-        values.confirmPssd
+        values.username
       )
         .then(() => {
           setTimeout(() =>{

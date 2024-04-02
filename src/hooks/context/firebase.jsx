@@ -3,9 +3,9 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
-import { getDatabase, set, ref } from "firebase/database";
+// import { getDatabase } from "firebase/database";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const firebaseConfig = {
@@ -20,7 +20,7 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
-const firebaseDatabase = getDatabase(firebaseApp);
+// const firebaseDatabase = getDatabase();
 
 const FirebaseContext = createContext(null);
 
@@ -34,24 +34,25 @@ export const FirebaseProvider = ({ children }) => {
   const currentUserAuth = () => {
     const currentUser = firebaseAuth.onAuthStateChanged((user) => {
       setUser(user);
+      console.log(user);
     });
     return currentUser;
   };
 
   useEffect(() => {
     currentUserAuth();
-  }, []);
+  }, [user]);
 
   // create new user with credentials for signup in database whenever new user singup...
-  const registerNewUser = async (email, passowrd, confirmPssd, username) => {
-    return await createUserWithEmailAndPassword(
-      firebaseAuth,
-      email,
-      passowrd,
-      confirmPssd,
-      username
-    )
+  const registerNewUser = async (email, passowrd, username) => {
+    return await createUserWithEmailAndPassword(firebaseAuth, email, passowrd)
       .then((registerdUserCredentials) => {
+        let registerdUser = registerdUserCredentials.user;
+        if (registerdUser) {
+          updateProfile(registerdUser, {
+            displayName: username,
+          });
+        }
         console.log("register", registerdUserCredentials);
         return registerdUserCredentials;
       })
@@ -59,11 +60,6 @@ export const FirebaseProvider = ({ children }) => {
         console.log(err);
         throw err;
       });
-  };
-
-  // storing new user in database...
-  const putUserData = (key, data) => {
-    set(ref(firebaseDatabase, key), data);
   };
 
   // Login user after registration.
@@ -79,18 +75,6 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
-  const isUserLoggedIn = () => {
-    return onAuthStateChanged((user) => {
-      if (user != null) {
-        return String(firebaseAuth?.currentUser()?.email())?.match(
-          /^[a-zA-Z]+/
-        )[0];
-      } else {
-        return user;
-      }
-    });
-  };
-
   const signOutCurrentUser = () => {
     return firebaseAuth.signOut(firebaseAuth);
   };
@@ -99,9 +83,7 @@ export const FirebaseProvider = ({ children }) => {
     <FirebaseContext.Provider
       value={{
         registerNewUser,
-        putUserData,
         loginUser,
-        isUserLoggedIn,
         user,
         signOutCurrentUser,
       }}

@@ -1,9 +1,10 @@
 import React from "react";
 import Loginlogo from "../Images/login-logo.png";
 import { useFirebaseAuth } from "../hooks/context/firebase";
+import { getAuth } from "firebase/auth";
 
 function Dashboard() {
-  const { signOutCurrentUser } = useFirebaseAuth();
+  const { signOutCurrentUser, user } = useFirebaseAuth();
 
   return (
     <div>
@@ -18,7 +19,13 @@ function Dashboard() {
               />
 
               <h1 className="store-account__card-title">CartZilla</h1>
-              <div className="store-account__card-link"></div>
+              <div className="store-account__card-link">
+                {user ? (
+                  <p>{String(getAuth().currentUser?.displayName)}</p>
+                ) : (
+                  ""
+                )}
+              </div>
 
               <div className="user-login">
                 <div className="signout-btn">

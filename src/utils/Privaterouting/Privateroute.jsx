@@ -5,7 +5,7 @@ import { useFirebaseAuth } from "../../hooks/context/firebase";
 function Privateroute({ children }) {
   const { user } = useFirebaseAuth();
 
-  return user  ? children : <Navigate to="/dashboard" />;
+  return user  ? children : <Navigate to="/login" />;
 }
 
 export default Privateroute;
