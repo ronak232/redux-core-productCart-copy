@@ -4,7 +4,7 @@ import { useFirebaseAuth } from "../hooks/context/firebase";
 import { getAuth } from "firebase/auth";
 
 function Dashboard() {
-  const { signOutCurrentUser, user } = useFirebaseAuth();
+  const { isCurrentUserSignOut, isUserLoggedIn } = useFirebaseAuth();
 
   return (
     <div>
@@ -20,8 +20,8 @@ function Dashboard() {
 
               <h1 className="store-account__card-title">CartZilla</h1>
               <div className="store-account__card-link">
-                {user ? (
-                  <p>{String(getAuth().currentUser?.displayName)}</p>
+                {isUserLoggedIn ? (
+                  <p className="store-account__welcome-mssg">Welcome {String(getAuth()?.currentUser?.displayName)} on our store.</p>
                 ) : (
                   ""
                 )}
@@ -29,16 +29,10 @@ function Dashboard() {
 
               <div className="user-login">
                 <div className="signout-btn">
-                  <button type="submit" onClick={() => signOutCurrentUser()}>
+                  <button type="submit" onClick={() => isCurrentUserSignOut()}>
                     Sign out
                   </button>
                 </div>
-                {/* <span>
-                  Register with us
-                  <Link to="/account">
-                    <button>Register Now</button>
-                  </Link>
-                </span> */}
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 function LoginUser() {
-  const { loginUser } = useFirebaseAuth();
+  const { isUserLoggedIn, loginUser } = useFirebaseAuth();
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   let isUserLoggedInSuccess = false;
@@ -30,16 +30,16 @@ function LoginUser() {
             isUserLoggedInSuccess = true;
             // Redirect after a delay
             setTimeout(() => {
-              navigate("/dashboard");
+              navigate("/signout");
             }, 1200);
           })
           .catch((err) => {
             // If login failed, set the error message
-            setTimeout(() => {
-              if (err.code === "auth/invalid-credential") {
+            if (err.code === "auth/invalid-credential") {
+              setTimeout(() => {
                 setLoginError(err.code);
-              }
-            }, 900);
+              }, 900);
+            }
           });
       } catch (error) {
         console.error("Error occurred during login:", error);

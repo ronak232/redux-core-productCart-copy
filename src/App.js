@@ -166,15 +166,15 @@ function App() {
               />
             }
           />
+          <Route path="/login" element={<LoginUser />} />
           <Route
-            path="/dashboard"
+            path="/signout"
             element={
               <Privateroute>
                 <Dashboard />
               </Privateroute>
             }
           />
-          <Route path="/login" element={<LoginUser />} />
         </Routes>
 
         {<Footer />}

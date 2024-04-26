@@ -13,3 +13,4 @@ step 2 : For testing purpose use firebase service like real time database for te
 
 Imp Point ---
 Private routes in React JS are routes that require authentication before granting access to specific components or pages. They ensure that only authenticated users can navigate to designated parts of the application, adding a layer of security.
+example user dashboard page.

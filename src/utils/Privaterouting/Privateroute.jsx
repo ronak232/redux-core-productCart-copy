@@ -3,9 +3,9 @@ import { Navigate } from "react-router-dom";
 import { useFirebaseAuth } from "../../hooks/context/firebase";
 
 function Privateroute({ children }) {
-  const { user } = useFirebaseAuth();
+  const { isUserLoggedIn } = useFirebaseAuth();
 
-  return user  ? children : <Navigate to="/login" />;
+  return isUserLoggedIn ? children : <Navigate to="/login" /> ;
 }
 
 export default Privateroute;

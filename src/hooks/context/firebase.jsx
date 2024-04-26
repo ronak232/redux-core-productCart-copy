@@ -5,7 +5,6 @@ import {
   signInWithEmailAndPassword,
   updateProfile,
 } from "firebase/auth";
-// import { getDatabase } from "firebase/database";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const firebaseConfig = {
@@ -20,28 +19,47 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
-// const firebaseDatabase = getDatabase();
-
 const FirebaseContext = createContext(null);
 
-// using this custom hook used for calling the context data anywhere in our application.
+// using this custom hook we can call the context data anywhere in our application.
 export const useFirebaseAuth = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  // const [signOutUser, setSignOutUser] = useState(null);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
   const currentUserAuth = () => {
-    const currentUser = firebaseAuth.onAuthStateChanged((user) => {
-      setUser(user);
-      console.log(user);
+    return new Promise((resolve, reject) => {
+      const currentUser = firebaseAuth.currentUser;
+      if (currentUser) {
+        resolve(currentUser);
+      } else {
+        reject("No logged in user");
+      }
     });
-    return currentUser;
+  };
+
+  const currentUser = () => {
+    // asynchronous function that listens for changes in the authentication state
+    // through callback function that gets called whenever the authentication state changes.
+    firebaseAuth.onAuthStateChanged((user) => {
+      if (user) {
+        setIsUserLoggedIn(user);
+        currentUserAuth()
+          .then((user) => {
+            console.log("User is logged in:", user.displayName);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      } else {
+        setIsUserLoggedIn(null);
+      }
+    });
   };
 
   useEffect(() => {
-    currentUserAuth();
-  }, [user]);
+    currentUser();
+  }, []);
 
   // create new user with credentials for signup in database whenever new user singup...
   const registerNewUser = async (email, passowrd, username) => {
@@ -75,8 +93,8 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
-  const signOutCurrentUser = () => {
-    return firebaseAuth.signOut(firebaseAuth);
+  const isCurrentUserSignOut = () => {
+    return firebaseAuth.signOut(firebaseAuth?.currentUser);
   };
 
   return (
@@ -84,8 +102,8 @@ export const FirebaseProvider = ({ children }) => {
       value={{
         registerNewUser,
         loginUser,
-        user,
-        signOutCurrentUser,
+        isUserLoggedIn,
+        isCurrentUserSignOut,
       }}
     >
       {children}

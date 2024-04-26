@@ -11,8 +11,8 @@ import { getAuth } from "firebase/auth";
 import { useFirebaseAuth } from "../hooks/context/firebase";
 
 function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
+  const { isUserLoggedIn } = useFirebaseAuth();
   const [mobileToggle, setmobileToggle] = useState(false);
-  const { user } = useFirebaseAuth();
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
@@ -63,17 +63,19 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
               </div>
               <Link
                 className="main-navbar-user"
-                to={user ? "/dashboard" : "/login"}
+                to={isUserLoggedIn ? "/signout": "/login" }
               >
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">
                   <h5>
                     Hello,
-                    {user ? (
+                    {isUserLoggedIn ? (
                       <small>
-                        {" "}
-                        {/* {String(getAuth()?.currentUser?.email)?.match(/^[a-zA-Z]+/)[0]} */}
-                        {String(getAuth()?.currentUser?.displayName)}
+                        {String(
+                          isUserLoggedIn
+                            ? getAuth()?.currentUser?.displayName
+                            : ""
+                        )}
                       </small>
                     ) : (
                       <small>Sign In</small>
