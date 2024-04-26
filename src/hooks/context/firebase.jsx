@@ -59,7 +59,7 @@ export const FirebaseProvider = ({ children }) => {
 
   useEffect(() => {
     currentUser();
-  }, []);
+  });
 
   // create new user with credentials for signup in database whenever new user singup...
   const registerNewUser = async (email, passowrd, username) => {

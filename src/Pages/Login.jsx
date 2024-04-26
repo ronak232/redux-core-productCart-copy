@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 function LoginUser() {
-  const { isUserLoggedIn, loginUser } = useFirebaseAuth();
+  const { loginUser } = useFirebaseAuth();
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   let isUserLoggedInSuccess = false;
