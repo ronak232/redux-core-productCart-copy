@@ -4,8 +4,10 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  signInWithPopup,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
+import { GoogleAuthProvider } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB5TFzHslTZ7-Rk5Rg6ZCWHVE7w6fuAo7Q",
@@ -17,6 +19,9 @@ const firebaseConfig = {
   databaseURL: "https://e-comm-app-6b0df-default-rtdb.firebaseio.com/",
 };
 
+// GoogleProvide instance for sign-in
+const googleSigninInstanceProvider = new GoogleAuthProvider();
+
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const FirebaseContext = createContext(null);
@@ -27,7 +32,7 @@ export const useFirebaseAuth = () => useContext(FirebaseContext);
 export const FirebaseProvider = ({ children }) => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
-  const currentUserAuth = () => {
+  const checkedCurrentUserAuth = () => {
     return new Promise((resolve, reject) => {
       const currentUser = firebaseAuth.currentUser;
       if (currentUser) {
@@ -44,7 +49,7 @@ export const FirebaseProvider = ({ children }) => {
     firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         setIsUserLoggedIn(user);
-        currentUserAuth()
+        checkedCurrentUserAuth()
           .then((user) => {
             console.log("User is logged in:", user.displayName);
           })
@@ -60,6 +65,21 @@ export const FirebaseProvider = ({ children }) => {
   useEffect(() => {
     currentUser();
   });
+
+  const signInwithGoogle = async () => {
+    return await signInWithPopup(firebaseAuth, googleSigninInstanceProvider)
+      .then((googleUser) => {
+        const userCredential = GoogleAuthProvider.credentialFromResult(googleUser);
+        const userToken = userCredential.accessToken;
+        const user = googleUser.user;
+        console.log(userToken, user)
+      })
+      .catch((googleError) => {
+        // Handling error for google sign
+        const credential = GoogleAuthProvider.credentialFromError(googleError);
+        console.log(credential);
+      });
+  };
 
   // create new user with credentials for signup in database whenever new user singup...
   const registerNewUser = async (email, passowrd, username) => {
@@ -80,7 +100,7 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
-  // Login user after registration.
+  // Login new user after registration.
   const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(firebaseAuth, email, password)
       .then((userCredential) => {
@@ -93,6 +113,7 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
+  // Email provider for signOut method...
   const isCurrentUserSignOut = () => {
     return firebaseAuth.signOut(firebaseAuth?.currentUser);
   };
@@ -104,6 +125,7 @@ export const FirebaseProvider = ({ children }) => {
         loginUser,
         isUserLoggedIn,
         isCurrentUserSignOut,
+        signInwithGoogle
       }}
     >
       {children}

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Button } from "../Styles/Button.style";
-import Spinner from "../ReuseComp/Loader/Loading";
-import Rating from "../ReuseComp/Rating/Rating";
+import { Button } from "../StyledComponents/Button.style";
+import Spinner from "../utils/Loader/Loading";
+import Rating from "../utils/Rating/Rating";
 import { FiShoppingCart } from "react-icons/fi";
 import FilterProduct from "./FilterProduct";
 import { useNavigate } from "react-router-dom";
+import spinner from "../Images/Spinner.gif";
 
 function Shop({
   handleAddProduct,
@@ -51,13 +52,11 @@ function Shop({
     <section>
       <div className="products">
         <div className="products__main-container">
-          {!disableFilterOptions && (
-            <FilterProduct
-              setcartFilter={setcartFilter}
-              allProducts={allProducts}
-              cartFilter={cartFilter}
-            />
-          )}
+          <FilterProduct
+            setcartFilter={setcartFilter}
+            allProducts={allProducts}
+            cartFilter={cartFilter}
+          />
 
           <div className="products__list">
             {!loading ? (
@@ -91,7 +90,7 @@ function Shop({
                         </div>
 
                         <div className="products__list--cards-cart-btn">
-                          <div style={{display:"none"}}>
+                          <div style={{ display: "none" }}>
                             <button>+</button>
                             <span>{}</span>
                             <button>-</button>
@@ -116,7 +115,7 @@ function Shop({
                 );
               })
             ) : (
-              <Spinner />
+              <Spinner spinner={spinner} />
             )}
           </div>
         </div>

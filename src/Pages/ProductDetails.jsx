@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Button } from "../Styles/Button.style";
+import { Button } from "../StyledComponents/Button.style";
 import { FiShoppingCart } from "react-icons/fi";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -8,6 +8,8 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
+import Rating from "../utils/Rating/Rating";
+import CustomStarRating from "../utils/Rating/CustomStarRating";
 
 function ProductDetails({
   allProducts,
@@ -73,6 +75,7 @@ function ProductDetails({
           <p className="productdetails__description">
             {matchedProducts?.description}
           </p>
+          <Rating stars={matchedProducts?.rating} />
           <div>
             <Button
               hover="grey"
@@ -108,6 +111,10 @@ function ProductDetails({
             <FiShoppingCart className="cart" />
             Add to Cart
           </Button>
+          <div>
+            <h1 style={{ color: "skyblue" }}>Rate product</h1>
+            <CustomStarRating />
+          </div>
         </div>
       </div>
     </div>

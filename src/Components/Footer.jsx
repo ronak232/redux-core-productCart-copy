@@ -1,6 +1,6 @@
 import React from "react";
 import data from "../Json/data.json";
-import { Button } from "../Styles/Button.style";
+import { Button } from "../StyledComponents/Button.style";
 import { TfiEmail } from "react-icons/tfi";
 
 function Footer() {

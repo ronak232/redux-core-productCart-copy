@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../Styles/Button.style";
+import { Button } from "../StyledComponents/Button.style";
 import { SlArrowLeft } from "react-icons/sl";
 import { ThemeContext } from "../hooks/ContextApi";
 
@@ -41,13 +41,7 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
                     <div className="cart-items-products-list-item">
                       <div className="cart-items-products-list-item-slider">
                         {products?.images?.map((item, index) => {
-                          return (
-                            // <div className="cart-items-products-list-item-slider">
-                            <img src={item} alt="" key={index} />
-                            // </div>
-                            // <div className="cart-items-products-list-item-slider-imgs">
-                            // </div>
-                          );
+                          return <img src={item} alt="" key={index} />;
                         })}
                       </div>
                       <div className="cart-items-products-list-item-desc">
@@ -59,7 +53,7 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
                         </h5>
                       </div>
                       <div className="cart-items-error-disclaimer">
-                        {products.quantity > products.stock ? (
+                        {products.quantity.length > products.stock ? (
                           <p>Cannot be added more items</p>
                         ) : (
                           ""
@@ -119,7 +113,13 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
           )}
           <div className="cart-items-sidepanel">
             <aside className="cart-items-sidepanel-checkout">
+              <p className="">Order Summary</p>
               <div className="cart-items-sidepanel-checkout-text">
+                <ul className="cart-items-ordersummary">
+                  <li>Total Items -</li>
+                  <li>Apply Discount -</li>
+                  <li>Total Amount - </li>
+                </ul>
                 <h5 className="cart-items-sidepanel-checkout-text-center">
                   Subtotal
                 </h5>

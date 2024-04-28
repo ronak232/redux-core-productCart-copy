@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { TfiEmail, TfiLock } from "react-icons/tfi";
-import { Button } from "../Styles/Button.style";
+import { Button } from "../StyledComponents/Button.style";
 import { LiaUserCircle } from "react-icons/lia";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -9,7 +9,8 @@ import { useFirebaseAuth } from "../hooks/context/firebase";
 import { Link, useNavigate } from "react-router-dom";
 
 function Account() {
-  const { registerNewUser } = useFirebaseAuth();
+  const { registerNewUser, signInwithGoogle } = useFirebaseAuth();
+  const [isValidatingCredential, setIsValidatingCredentials] = useState(null)
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -43,18 +44,16 @@ function Account() {
     },
 
     onSubmit: async (values) => {
-      await registerNewUser(
-        values.email,
-        values.password,
-        values.username
-      )
+      await registerNewUser(values.email, values.password, values.username)
         .then(() => {
-          setTimeout(() =>{
+          setTimeout(() => {
             navigate("/login");
-          }, 1500)
+          }, 1500);
         })
         .catch((err) => {
-          console.log(err);
+          if(err.code === "auth/email-already-in-use"){
+            setIsValidatingCredentials(err)
+          }
         });
       formik.resetForm();
     },
@@ -79,7 +78,7 @@ function Account() {
                 <div className="store-account__card-loginoptions">
                   <button
                     className="store-account__card-link-media bg-google"
-                    href="/"
+                    onClick={() => signInwithGoogle()}
                   >
                     <i class="bg-grey fa-brands fa-google"></i>
                   </button>
@@ -97,6 +96,7 @@ function Account() {
                   </button>
                 </div>
               </div>
+              <div>{isValidatingCredential && <p>E-mail already in use</p>}</div>
               <div className="store-account__form">
                 <form
                   className="store-account__form-control"

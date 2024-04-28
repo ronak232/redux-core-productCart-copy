@@ -16,8 +16,7 @@ const themeModereducer = (state, action) => {
   }
 };
 
-//
-const ThemeProvider = (props) => {
+const ThemeProvider = ({ children }) => {
   const storedTheme = JSON.parse(localStorage.getItem("theme"));
   const [state, dispatch] = useReducer(
     themeModereducer,
@@ -29,7 +28,7 @@ const ThemeProvider = (props) => {
   }, [state]);
   return (
     <ThemeContext.Provider value={{ state, dispatch }}>
-      {props.children}
+      {children}
     </ThemeContext.Provider>
   );
 };

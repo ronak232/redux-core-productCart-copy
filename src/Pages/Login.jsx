@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 function LoginUser() {
-  const { loginUser } = useFirebaseAuth();
+  const { loginUser, signInwithGoogle } = useFirebaseAuth();
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   let isUserLoggedInSuccess = false;
@@ -35,7 +35,10 @@ function LoginUser() {
           })
           .catch((err) => {
             // If login failed, set the error message
-            if (err.code === "auth/invalid-credential") {
+            if (
+              err.code === "auth/invalid-credential" ||
+              err.code === "auth/email-already-in-use"
+            ) {
               setTimeout(() => {
                 setLoginError(err.code);
               }, 900);
@@ -71,7 +74,10 @@ function LoginUser() {
                     or Login with :
                   </h3>
                   <div className="store-account__card-loginoptions">
-                    <button className="store-account__card-link-media bg-google">
+                    <button
+                      className="store-account__card-link-media bg-google"
+                      onClick={() => signInwithGoogle()}
+                    >
                       <i class="bg-grey fa-brands fa-google"></i>
                     </button>
                     <button className="store-account__card-link-media bg-facebook">

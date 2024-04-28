@@ -10,7 +10,7 @@ import Shop from "./Components/Shop";
 import Pages from "./Components/Pages";
 import Cart from "./Pages/Cart";
 import Footer from "./Components/Footer";
-import Themetoggle from "./ReuseComp/DarkModeToggle/Themetoggle";
+import Themetoggle from "./utils/DarkModeToggle/Themetoggle";
 import { ThemeContext } from "./hooks/ContextApi";
 import { useContext } from "react";
 import ProductDetails from "./Pages/ProductDetails";
@@ -18,6 +18,7 @@ import paginate from "./utils/paginate";
 import LoginUser from "./Pages/Login";
 import Privateroute from "./utils/Privaterouting/Privateroute";
 import Dashboard from "./Pages/Dashboard";
+import ProductSearchSuggestion from "./features/ProductSearchSuggestion";
 
 function App() {
   const theme = useContext(ThemeContext);
@@ -32,7 +33,13 @@ function App() {
     JSON.parse(localStorage.getItem("cartProducts")) || []
   );
 
+  // filtering product based on the category
   const [cartFilter, setcartFilter] = useState([]);
+
+  // Product Search suggestion
+  const [searchBoxProductSuggestion, setSearchBoxProductSuggestion] = useState(
+    []
+  );
 
   // Search product hooks
   const [querySearch, setQuerySearch] = useState("");
@@ -94,6 +101,7 @@ function App() {
         setcartFilter(paginate(data));
         setProductSearch(data);
         setLoading(false);
+        setSearchBoxProductSuggestion(data);
       })
       .catch((error) => {
         alert(error);
@@ -104,6 +112,8 @@ function App() {
     APICall();
   }, []);
 
+  console.log(searchBoxProductSuggestion);
+
   return (
     <div className={darkMode ? "dark" : ""}>
       <Router>
@@ -112,8 +122,9 @@ function App() {
           cartItems={cartItems}
           querySearch={querySearch}
           setQuerySearch={setQuerySearch}
-          // handleSearchProduct={handleSearchProduct}
+          data={searchBoxProductSuggestion}
         />
+        
         <Themetoggle />
         <Routes>
           <Route
@@ -176,9 +187,9 @@ function App() {
             }
           />
         </Routes>
-
-        {<Footer />}
       </Router>
+
+      {<Footer />}
     </div>
   );
 }

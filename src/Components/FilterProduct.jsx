@@ -3,7 +3,8 @@ import paginate from "../utils/paginate";
 
 function FilterProduct({ setcartFilter, cartFilter, allProducts }) {
   const [selectedCategory, setSelectedCategory] = useState([]);
-  const [paginationOnFilter, setPaginationOnFilter] = useState(1)
+  const [paginationOnFilter, setPaginationOnFilter] = useState(1);
+
   // To filter only the product categories
   const allCategories = [
     ...new Set(allProducts?.flat()?.map((item) => item?.category)), //flat() method is used to flatten the paginated arrays into a single array before applying the filtering logic.
@@ -41,7 +42,6 @@ function FilterProduct({ setcartFilter, cartFilter, allProducts }) {
   );
 
   const clearAllFilter = () => {
-    console.log(cartFilter);
     setSelectedCategory([]);
     setPaginationOnFilter(paginate(paginationOnFilter));
   };
@@ -56,7 +56,6 @@ function FilterProduct({ setcartFilter, cartFilter, allProducts }) {
               return (
                 <button
                   className="filters-btn"
-                  // style={{color:darkMode ? "white" : "black"}}
                   key={index}
                   onClick={() => filterProductItems(category)}
                 >

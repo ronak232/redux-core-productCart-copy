@@ -1,4 +1,4 @@
-import { Button } from "../../Styles/Button.style";
+import { Button } from "../../StyledComponents/Button.style";
 import React from "react";
 
 function MoreIems({ showMoreItems, disableButton }) {

@@ -7,8 +7,6 @@ function Rating({ stars }) {
     <div className="product-rating">
       {/* We can generate the sequence of the numbers */}
       {Array.from({ length: 5 }, (_, i) => {
-        // debugger;
-
         return (
           <span className="product-rating-color" key={i}>
             {stars >= i + 1 ? (

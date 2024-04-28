@@ -9,14 +9,14 @@ import { MdArrowDropDown } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { getAuth } from "firebase/auth";
 import { useFirebaseAuth } from "../hooks/context/firebase";
+import ProductSearchSuggestion from "../features/ProductSearchSuggestion";
 
-function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
+function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
   const { isUserLoggedIn } = useFirebaseAuth();
   const [mobileToggle, setmobileToggle] = useState(false);
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
-
   return (
     <header>
       <nav className="main-navbar">
@@ -30,7 +30,7 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
             </a>
             <div className="main-navbar-search hide">
               <form
-                className="d-flex"
+                
                 role="search"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -46,6 +46,7 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
                   value={querySearch}
                   onChange={(e) => setQuerySearch(e.target.value)}
                 />
+                <ProductSearchSuggestion data={data} querySearch={querySearch} />
               </form>
             </div>
             <div className="main-navbar-productCart">
@@ -63,7 +64,7 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch }) {
               </div>
               <Link
                 className="main-navbar-user"
-                to={isUserLoggedIn ? "/signout": "/login" }
+                to={isUserLoggedIn ? "/signout" : "/login"}
               >
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">

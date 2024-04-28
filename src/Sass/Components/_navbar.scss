@@ -36,6 +36,7 @@
     padding: 0 8px;
     form {
       width: 100%;
+      position: relative;
     }
     display: flex;
     align-items: center;
@@ -53,7 +54,7 @@
       width: 100%;
       padding: 11px 14px 11px 38px;
       font-size: 15px;
-      
+
       @include border(1px solid #dae1e7, 16px);
     }
 
@@ -231,8 +232,35 @@
   &.hide {
     display: block;
 
-    @include devices(tablet){
+    @include devices(tablet) {
       display: none;
     }
+  }
+}
+
+.search-suggestion-container {
+  position: absolute;
+  top: 2.5rem;
+  background: $white-color;
+  color: $black-color;
+  width: 100%;
+  max-height: 300px;
+  border: 1px solid #dae1e7;
+  box-shadow: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.search-suggestion-list {
+  padding: 1rem;
+  height: auto;
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  li {
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
   }
 }
