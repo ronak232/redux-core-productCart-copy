@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import axios from "axios";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import NavBar from "./Components/Navbar";
 import Home from "./Pages/Home";
 import Account from "./Pages/Account";
@@ -10,18 +10,19 @@ import Shop from "./Components/Shop";
 import Pages from "./Components/Pages";
 import Cart from "./Pages/Cart";
 import Footer from "./Components/Footer";
-import Themetoggle from "./utils/DarkModeToggle/Themetoggle";
-import { ThemeContext } from "./hooks/ContextApi";
+import Themetoggle from "./features/DarkModeToggle/Themetoggle";
+import { ThemeContext } from "./hooks/context/thememode";
 import { useContext } from "react";
 import ProductDetails from "./Pages/ProductDetails";
 import paginate from "./utils/paginate";
 import LoginUser from "./Pages/Login";
-import Privateroute from "./utils/Privaterouting/Privateroute";
+import Privateroute from "./features/Privaterouting/Privateroute";
 import Dashboard from "./Pages/Dashboard";
-import ProductSearchSuggestion from "./features/ProductSearchSuggestion";
+import { useFirebaseAuth } from "./hooks/context/firebase..config.jsx";
 
 function App() {
   const theme = useContext(ThemeContext);
+  const { isUserLoggedIn } = useFirebaseAuth();
   const darkMode = theme.state.darkMode;
 
   const [allProducts, setAllProducts] = useState([]);
@@ -40,9 +41,6 @@ function App() {
   const [searchBoxProductSuggestion, setSearchBoxProductSuggestion] = useState(
     []
   );
-
-  // Search product hooks
-  const [querySearch, setQuerySearch] = useState("");
 
   const [productSearch, setProductSearch] = useState([]);
 
@@ -109,85 +107,80 @@ function App() {
   };
 
   useEffect(() => {
-    APICall();
+    setTimeout(() => {
+      APICall();
+    }, 1500);
   }, []);
 
-  console.log(searchBoxProductSuggestion);
-
   return (
-    <div className={darkMode ? "dark" : ""}>
-      <Router>
-        <NavBar
-          count={cartItems.length}
-          cartItems={cartItems}
-          querySearch={querySearch}
-          setQuerySearch={setQuerySearch}
-          data={searchBoxProductSuggestion}
+    <div className={darkMode ? "dark" : "light"}>
+      <NavBar
+        count={cartItems.length}
+        cartItems={cartItems}
+        data={searchBoxProductSuggestion}
+        loading={loading}
+      />
+
+      <Themetoggle />
+      <Routes>
+        <Route
+          path="/"
+          element={<Home handleAddProduct={handleAddProduct} />}
         />
-        
-        <Themetoggle />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                cartFilter={cartFilter}
-                disableFilterOptions={false}
-                handleAddProduct={handleAddProduct}
-              />
-            }
-          />
-          <Route exact path="/account" element={<Account />} />
-          <Route
-            path="/shop"
-            element={
-              <Shop
-                handleAddProduct={handleAddProduct}
-                cartItems={cartItems}
-                cartFilter={cartFilter}
-                setcartFilter={setcartFilter}
-                allProducts={allProducts}
-                querySearch={querySearch}
-                productSearch={productSearch}
-                loading={loading}
-              />
-            }
-          />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/pages" element={<Pages />} />
-          <Route
-            path="/cart"
-            element={
-              <Cart
-                cartItems={cartItems}
-                handleIncrement={handleIncrement}
-                handleDecrement={handleDecrement}
-                onRemove={removeAddedItem}
-              />
-            }
-          />
-          <Route
-            path="/details/:id"
-            element={
-              <ProductDetails
-                allProducts={allProducts}
-                handleAddProduct={handleAddProduct}
-                handleIncrement={handleIncrement}
-                handleDecrement={handleDecrement}
-              />
-            }
-          />
-          <Route path="/login" element={<LoginUser />} />
-          <Route
-            path="/signout"
-            element={
-              <Privateroute>
-                <Dashboard />
-              </Privateroute>
-            }
-          />
-        </Routes>
-      </Router>
+        <Route
+          path={isUserLoggedIn ? "/auth" : "/account"}
+          element={isUserLoggedIn ? <Dashboard /> : <Account />}
+        />
+        <Route
+          path="/shop"
+          element={
+            <Shop
+              handleAddProduct={handleAddProduct}
+              cartItems={cartItems}
+              cartFilter={cartFilter}
+              setcartFilter={setcartFilter}
+              allProducts={allProducts}
+              productSearch={productSearch}
+              loading={loading}
+            />
+          }
+        />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/pages" element={<Pages />} />
+        <Route
+          path="/cart"
+          element={
+            <Cart
+              cartItems={cartItems}
+              handleIncrement={handleIncrement}
+              handleDecrement={handleDecrement}
+              onRemove={removeAddedItem}
+              allProducts={allProducts}
+            />
+          }
+        />
+        <Route
+          path="/details/:id"
+          element={
+            <ProductDetails
+              allProducts={allProducts}
+              handleAddProduct={handleAddProduct}
+              handleIncrement={handleIncrement}
+              handleDecrement={handleDecrement}
+            />
+          }
+        />
+        <Route path="/login" element={<LoginUser />} />
+        <Route
+          path="/auth"
+          element={
+            <Privateroute>
+              <Dashboard />
+            </Privateroute>
+          }
+        />
+      </Routes>
+      {/* </Router> */}
 
       {<Footer />}
     </div>

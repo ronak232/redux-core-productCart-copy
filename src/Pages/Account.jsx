@@ -5,12 +5,13 @@ import { LiaUserCircle } from "react-icons/lia";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loginlogo from "../Images/login-logo.png";
-import { useFirebaseAuth } from "../hooks/context/firebase";
+import { useFirebaseAuth } from "../hooks/context/firebase..config.jsx";
 import { Link, useNavigate } from "react-router-dom";
 
 function Account() {
-  const { registerNewUser, signInwithGoogle } = useFirebaseAuth();
-  const [isValidatingCredential, setIsValidatingCredentials] = useState(null)
+  const { registerNewUser, signInwithGoogle, isUserLoggedIn, facebookAuth } =
+    useFirebaseAuth();
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(null);
   const navigate = useNavigate();
 
   const formik = useFormik({
@@ -51,8 +52,8 @@ function Account() {
           }, 1500);
         })
         .catch((err) => {
-          if(err.code === "auth/email-already-in-use"){
-            setIsValidatingCredentials(err)
+          if (err.code === "auth/email-already-in-use") {
+            setIsUserAuthenticated(err);
           }
         });
       formik.resetForm();
@@ -82,21 +83,18 @@ function Account() {
                   >
                     <i class="bg-grey fa-brands fa-google"></i>
                   </button>
-                  <button
-                    className="store-account__card-link-media bg-facebook"
-                    href="/"
-                  >
-                    <i class="bg-grey fa-brands fa-facebook-f"></i>
-                  </button>
-                  <button
-                    className="store-account__card-link-media bg-twitter"
-                    href="/"
-                  >
-                    <i class="bg-grey fa-brands fa-twitter"></i>
-                  </button>
+                  {
+                    <button
+                      onClick={() => facebookAuth()}
+                      className="store-account__card-link-media bg-facebook"
+                      href="/"
+                    >
+                      <i class="bg-grey fa-brands fa-facebook-f"></i>
+                    </button>
+                  }
                 </div>
               </div>
-              <div>{isValidatingCredential && <p>E-mail already in use</p>}</div>
+              <div>{isUserAuthenticated && <p>E-mail already in use</p>}</div>
               <div className="store-account__form">
                 <form
                   className="store-account__form-control"
@@ -197,7 +195,7 @@ function Account() {
               <div className="user-registration">
                 <span>
                   Already Register?
-                  <Link to="/login">
+                  <Link to={isUserLoggedIn ? "/signout" : "/login"}>
                     <button>Login</button>
                   </Link>
                 </span>

@@ -5,7 +5,7 @@ List of more functionality adding in the future:
 3. Authentication to sign in using firebase --- Done 
 
 
-How to setup firebase in react js
+How to setup firebase in react js Done
 step 1 : Create the app firebase console 
 step 2 : For testing purpose use firebase service like real time database for testing purpose 
         ```Choose "Start in Test mode" options for now.```
@@ -13,4 +13,18 @@ step 2 : For testing purpose use firebase service like real time database for te
 
 Imp Point ---
 Private routes in React JS are routes that require authentication before granting access to specific components or pages. They ensure that only authenticated users can navigate to designated parts of the application, adding a layer of security.
-example user dashboard page.
+example user dashboard page. Done
+
+
+memoize functionality for searchProducts 
+  // const searchResult = querySearch
+  //   ? productSearch.filter((item) =>
+  //       item?.title?.toLowerCase().includes(querySearch.toLowerCase())
+  //     ) // Use productSearch when search query is present
+  //   : cartFilter; //Use cartFilter when there is no search query;
+
+  // the useCallback hook to memoize the setcartFilter function.
+  // useCallback hook to memoize the function and only recreate it when its dependencies change
+  // This helps to ensure that the function reference remains stable unless its dependencies change
+  // memoizedSetcartFilter to the dependency array and using useCallback, you address the linting warning while ensuring that the function reference is stable.
+  // const memoizedSetcartFilter = useCallback(setcartFilter, [setcartFilter]);

@@ -28,7 +28,7 @@
     }
 
     @include devices(desktop) {
-      width: 50%;
+      width: 100%;
       margin-left: 70px;
       text-align: start;
     }
@@ -98,7 +98,7 @@
       width: 100%;
       margin: 0 12px;
       @include devices(tablet) {
-        width: 50%;
+        width: 100%;
       }
     }
     &-img {
@@ -111,11 +111,10 @@
 
   &--slider {
     display: flex;
-    width: 100%;
     overflow: hidden;
 
     @include devices(tablet) {
-      width: 70%;
+      width: 100%;
     }
   }
 

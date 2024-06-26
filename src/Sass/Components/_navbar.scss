@@ -10,6 +10,7 @@
     @include container(flex, space-between, center);
     flex-direction: row;
     gap: 12px;
+    position: relative;
     @include devices(tablet) {
       flex-direction: row;
       align-items: center;
@@ -34,16 +35,14 @@
 
   &-search {
     padding: 0 8px;
-    form {
-      width: 100%;
-      position: relative;
-    }
-    display: flex;
-    align-items: center;
     width: 100%;
     color: #4b566b;
     display: none;
 
+    form {
+      width: 100%;
+      position: relative;
+    }
     &-icon {
       position: absolute;
       transform: translateY(10px);
@@ -54,12 +53,12 @@
       width: 100%;
       padding: 11px 14px 11px 38px;
       font-size: 15px;
-
       @include border(1px solid #dae1e7, 16px);
     }
 
     @include devices(desktop) {
-      display: block;
+      display: flex;
+      position: relative;
     }
   }
 
@@ -113,15 +112,17 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    font-size: 16px;
+    gap: 18px;
     font-family: $openSans;
     width: 100%;
+
+    @include devices(tablet) {
+      gap: 8px;
+    }
   }
   &-user {
     display: flex;
     align-items: center;
-    font-size: 14px;
-    margin-right: 10px;
 
     &-icons {
       font-size: 24px;
@@ -133,6 +134,9 @@
       @include devices(desktop) {
         display: block;
       }
+      small {
+        font-weight: 300;
+      }
     }
   }
   &-cart-item {
@@ -140,7 +144,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 16px;
 
     &-number {
       position: absolute;
@@ -174,8 +177,6 @@
 
 .navbar-toggle {
   display: block;
-  padding-right: 20px;
-  padding-left: 17px;
   color: $white-color;
   font-size: 40px;
 
@@ -187,6 +188,7 @@
     font-size: 32px;
     background: transparent;
     border: 0;
+    padding: 0;
   }
 }
 
@@ -226,11 +228,17 @@
   padding: 10px;
   margin-right: 14px;
   cursor: pointer;
+  @include devices(tablet) {
+    margin-right: 0;
+  }
 }
 
 .product__search {
   &.hide {
     display: block;
+    width: 20px;
+    height: 15px;
+    font-size: 17px;
 
     @include devices(tablet) {
       display: none;
@@ -249,7 +257,11 @@
   box-shadow: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
   z-index: 10;
-  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.search-suggestion-container::-webkit-scrollbar {
+  display: none;
 }
 
 .search-suggestion-list {
@@ -262,5 +274,30 @@
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
+  }
+}
+
+.product-notfound {
+  padding: 10px 6px;
+}
+
+.search__product {
+  background: transparent;
+  display: none;
+  @media screen and (width <= 820px) {
+    display: block;
+    position: relative;
+    font-size: 18px;
+  }
+}
+
+.mobile-search {
+  transition: all 0.5ms ease-in-out;
+  display: none;
+  margin-bottom: 4px;
+
+
+  &.show{
+    display: block;
   }
 }

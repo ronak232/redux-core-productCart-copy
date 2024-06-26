@@ -199,9 +199,12 @@
 
 .login-btn,
 .signout-btn {
+  display: flex;
+  align-items: center;
   button {
     background: rgb(56, 63, 220);
-    border-radius: 5px;
+    border-radius: 20px;
+    box-shadow: #f46b6b;
     padding: 14px;
     font-size: 18px;
     font-weight: 500;

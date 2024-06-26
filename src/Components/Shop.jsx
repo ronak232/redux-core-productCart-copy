@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../StyledComponents/Button.style";
 import Spinner from "../utils/Loader/Loading";
-import Rating from "../utils/Rating/Rating";
+import Rating from "../features/Rating/Rating";
 import { FiShoppingCart } from "react-icons/fi";
 import FilterProduct from "./FilterProduct";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,6 @@ import spinner from "../Images/Spinner.gif";
 
 function Shop({
   handleAddProduct,
-  disableFilterOptions,
   allProducts,
   cartFilter,
   setcartFilter,
@@ -18,49 +17,37 @@ function Shop({
   loading,
 }) {
   const [paginatePages, setPaginatePages] = useState(0); //Current page
+  const navigate = useNavigate();
 
   const handlePageChange = (index) => {
     setPaginatePages(index);
   };
-
-  const searchResult = querySearch
-    ? productSearch.filter((item) =>
-        item?.title?.toLowerCase().includes(querySearch.toLowerCase())
-      ) // Use productSearch when search query is present
-    : cartFilter; //Use cartFilter when there is no search query;
-
-  // the useCallback hook to memoize the setcartFilter function.
-  // useCallback hook to memoize the function and only recreate it when its dependencies change
-  // This helps to ensure that the function reference remains stable unless its dependencies change
-  // memoizedSetcartFilter to the dependency array and using useCallback, you address the linting warning while ensuring that the function reference is stable.
-  const memoizedSetcartFilter = useCallback(setcartFilter, [setcartFilter]);
 
   useEffect(() => {
     if (loading) {
       return;
     }
     setcartFilter(allProducts[paginatePages]);
-    memoizedSetcartFilter(allProducts[paginatePages]);
-  }, [loading, paginatePages, querySearch, allProducts, memoizedSetcartFilter]);
+    // memoizedSetcartFilter(allProducts[paginatePages]);
+  }, [loading, paginatePages, allProducts]);
 
-  const Navigate = useNavigate();
   const detailNavigate = (id) => {
-    Navigate(`/details/${id}`);
+    navigate(`/details/${id}`);
   };
 
   return (
     <section>
-      <div className="products">
-        <div className="products__main-container">
-          <FilterProduct
-            setcartFilter={setcartFilter}
-            allProducts={allProducts}
-            cartFilter={cartFilter}
-          />
+      {!loading ? (
+        <div className="products">
+          <div className="products__main-container">
+            <FilterProduct
+              setcartFilter={setcartFilter}
+              allProducts={allProducts}
+              cartFilter={cartFilter}
+            />
 
-          <div className="products__list">
-            {!loading ? (
-              searchResult?.map((prod) => {
+            <div className="products__list">
+              {cartFilter?.map((prod) => {
                 return (
                   <div className="products__list--cards" key={prod?.id}>
                     <div className="products__list--cards-content">
@@ -113,31 +100,31 @@ function Shop({
                     </div>
                   </div>
                 );
-              })
-            ) : (
-              <Spinner spinner={spinner} />
-            )}
+              })}
+            </div>
           </div>
+          {!loading && (
+            <div className="pagination-btn">
+              <button></button>
+              {allProducts.map((_, index) => {
+                return (
+                  <button
+                    className={
+                      paginatePages === index ? "active" : "page-btn__number"
+                    }
+                    key={index}
+                    onClick={() => handlePageChange(index)}
+                  >
+                    {index + 1}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
-        {!loading && (
-          <div className="page-btn">
-            <button></button>
-            {allProducts.map((_, index) => {
-              return (
-                <button
-                  className={
-                    paginatePages === index ? "active" : "page-btn__number"
-                  }
-                  key={index}
-                  onClick={() => handlePageChange(index)}
-                >
-                  {index + 1}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
+      ) : (
+        <Spinner spinner={spinner} />
+      )}
     </section>
   );
 }

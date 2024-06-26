@@ -23,9 +23,7 @@ function Store() {
                       alt=""
                     />
                     <div className="products-listed--links">
-                      {/* <h1 className="products-listed--links-title"> */}
                         <a href="/">{item?.title}</a>
-                      {/* </h1> */}
                       <span className="products-listed--links-price">
                         {item?.price}
                       </span>
@@ -58,7 +56,6 @@ function Store() {
                       alt=""
                     />
                     <div className="products-listed--links">
-                      {/* <h6 className="products-listed--links-title"> */}
                         <a href="/">{item?.title}</a>
                       {/* </h6> */}
                       <div className="products-listed--links-price">

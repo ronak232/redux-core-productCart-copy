@@ -7,7 +7,7 @@ function FilterProduct({ setcartFilter, cartFilter, allProducts }) {
 
   // To filter only the product categories
   const allCategories = [
-    ...new Set(allProducts?.flat()?.map((item) => item?.category)), //flat() method is used to flatten the paginated arrays into a single array before applying the filtering logic.
+    ...new Set(allProducts?.flat()?.map((item) => item?.category))//flat() method is used to flatten the paginated arrays into a single array before applying the filtering logic.
   ];
 
   // To calculate the maximum price of the product.

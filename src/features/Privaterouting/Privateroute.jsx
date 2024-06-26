@@ -1,11 +1,10 @@
-import React from "react";
 import { Navigate } from "react-router-dom";
-import { useFirebaseAuth } from "../../hooks/context/firebase";
+import { useFirebaseAuth } from "../../hooks/context/firebase..config.jsx";
 
 function Privateroute({ children }) {
   const { isUserLoggedIn } = useFirebaseAuth();
 
-  return isUserLoggedIn ? children : <Navigate to="/login" /> ;
+  return isUserLoggedIn ? children : <Navigate replace={true} to={"/login"} />;
 }
 
 export default Privateroute;

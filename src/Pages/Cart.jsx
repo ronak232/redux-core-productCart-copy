@@ -1,10 +1,25 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "../StyledComponents/Button.style";
 import { SlArrowLeft } from "react-icons/sl";
-import { ThemeContext } from "../hooks/ContextApi";
+import { ThemeContext } from "../hooks/context/thememode";
+import totalAmount from "../utils/totalAmount";
+import emptyCartImg from '../Images/empty-cart.png'
 
-function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
+function Cart({
+  cartItems,
+  onRemove,
+  handleIncrement,
+  handleDecrement,
+  allProducts,
+}) {
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  // let totalAmount = cartItems
+  //   ?.map((item) => item.price * item.quantity)
+  //   ?.reduce((total, value) => total + value, 0);
+
+  // let roundTwoDollar = Math.round((totalAmount + Number.EPSILON) * 100) / 100;
+
   const theme = useContext(ThemeContext);
   const darkMode = theme?.state?.darkMode;
   return (
@@ -18,7 +33,11 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
       <div className="cart-items">
         <div className="cart-items-container">
           {cartItems?.length === 0 ? (
-            <div>No items in the cart</div>
+            <div className="empty-cart">
+              <img src={emptyCartImg} alt="" />
+              <p>No items in the cart</p>
+              <Link to={"/shop"}><button className="exp-store">Explore Shop</button></Link>
+            </div>
           ) : (
             <div className="cart-items-products">
               <div className="cart-items-products-shop-toggle">
@@ -75,7 +94,6 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
                       <span className="cart-items-quantity">
                         {products?.quantity}
                       </span>
-                      {/* <input className="cart-items-qty-number" type="text" min={1} max={products?.stock} /> */}
                       <Button
                         hover="grey"
                         padding="4px 10px"
@@ -113,23 +131,26 @@ function Cart({ cartItems, onRemove, handleIncrement, handleDecrement }) {
           )}
           <div className="cart-items-sidepanel">
             <aside className="cart-items-sidepanel-checkout">
-              <p className="">Order Summary</p>
-              <div className="cart-items-sidepanel-checkout-text">
-                <ul className="cart-items-ordersummary">
-                  <li>Total Items -</li>
-                  <li>Apply Discount -</li>
-                  <li>Total Amount - </li>
-                </ul>
-                <h5 className="cart-items-sidepanel-checkout-text-center">
+              <h1 className="">Order Summary</h1>
+
+              <ul className="cart-items-sidepanel__summary">
+                <li>
+                  Total Items <span>{totalItems}</span>
+                </li>
+                <li>
+                  Apply Discount <span></span>
+                </li>
+                <li>
+                  Total Saving <span></span>
+                </li>
+
+                <li className="cart-items-sidepanel-checkout-text-center">
                   Subtotal
-                </h5>
-                <h3 className="cart-items-sidepanel-checkout-text-price">
-                  $
-                  {cartItems
-                    ?.map((item) => item.price * item.quantity)
-                    ?.reduce((total, value) => total + value, 0)}
-                </h3>
-              </div>
+                  <span className="cart-items-sidepanel-checkout-text-price">
+                    ${totalAmount(cartItems)}
+                  </span>
+                </li>
+              </ul>
             </aside>
           </div>
         </div>

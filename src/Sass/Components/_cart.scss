@@ -5,9 +5,9 @@
   &-container {
     position: relative;
     @include container(flex, space-between, center);
+    gap: 22px;
     flex-direction: column;
-    @include devices(desktop) {
-      // width: 70%;
+    @include devices(tablet) {
       flex-direction: row;
     }
   }
@@ -131,9 +131,9 @@
   &-sidepanel {
     text-align: center;
     width: 100%;
-    background-color: rgba(255, 255, 255, 0.973);
+    background-color: #a8a8a8a9;
     height: 100%;
-    padding: 20px 0;
+    padding: 20px 16px;
     border-radius: 8px;
     box-shadow: 1px 2px 20px rgba(0, 0, 0, 0.36);
 
@@ -144,20 +144,20 @@
     @include devices(desktop) {
       width: 30%;
     }
+    &__summary {
+      display: flex;
+      gap: 18px;
+      flex-direction: column;
+      justify-content: space-between;
 
-    &-checkout {
-      &-text {
-        padding: 16px 0;
-        color: initial;
-        &-center {
-          font-size: 18px;
-          padding: 16px 0;
-        }
-
-        &-price {
-          font-size: 28px;
-          font-weight: 400;
-        }
+      li{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+        font-weight: 500;
+        border-bottom: 2px solid #d8f9e0;
+        letter-spacing: 0.1rem;
       }
     }
   }
@@ -174,5 +174,24 @@
       color: $white-color;
       font-size: 24px;
     }
+  }
+}
+
+.empty-cart {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  p {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 600;
+    font-family: $font-montserrat;
+  }
+  .exp-store{
+    background-color: #fe696a;
+    border: 0;
+    outline: none;
+    color: $white-color;
   }
 }

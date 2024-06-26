@@ -3,12 +3,12 @@ import { TfiEmail, TfiLock } from "react-icons/tfi";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loginlogo from "../Images/login-logo.png";
-import { useFirebaseAuth } from "../hooks/context/firebase";
+import { useFirebaseAuth } from "../hooks/context/firebase..config.jsx";
 import { Link, useNavigate } from "react-router-dom";
 import Dashboard from "./Dashboard";
 
 function LoginUser() {
-  const { loginUser, signInwithGoogle } = useFirebaseAuth();
+  const { loginUser, signInwithGoogle, isUserLoggedIn, facebookAuth } = useFirebaseAuth();
   const [loginError, setLoginError] = useState(null);
   const navigate = useNavigate();
   let isUserLoggedInSuccess = false;
@@ -30,7 +30,7 @@ function LoginUser() {
             isUserLoggedInSuccess = true;
             // Redirect after a delay
             setTimeout(() => {
-              navigate("/signout");
+              navigate("/auth");
             }, 1200);
           })
           .catch((err) => {
@@ -53,9 +53,13 @@ function LoginUser() {
     },
   });
 
+  const allowGoogleSign = () => {
+    if(loginError === "") {}
+  }
+
   return (
     <>
-      {!loginUser ? (
+      {isUserLoggedIn ? (
         <Dashboard />
       ) : (
         <div className="store-account">
@@ -80,11 +84,8 @@ function LoginUser() {
                     >
                       <i class="bg-grey fa-brands fa-google"></i>
                     </button>
-                    <button className="store-account__card-link-media bg-facebook">
+                    <button className="store-account__card-link-media bg-facebook" onClick={() => facebookAuth()}>
                       <i class="bg-grey fa-brands fa-facebook-f"></i>
-                    </button>
-                    <button className="store-account__card-link-media  bg-twitter">
-                      <i class="bg-grey fa-brands fa-twitter"></i>
                     </button>
                   </div>
                 </div>

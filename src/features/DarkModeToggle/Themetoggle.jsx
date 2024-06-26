@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { BsSun } from "react-icons/bs";
 import { BsSunFill } from "react-icons/bs";
-import { ThemeContext } from "../../hooks/ContextApi";
+import { ThemeContext } from "../../hooks/context/thememode";
 
 function Themetoggle() {
   const theme = useContext(ThemeContext);
@@ -10,7 +10,7 @@ function Themetoggle() {
   };
   return (
     <div className="toggle">
-      <div className="toggle-theme">
+      <div className="toggle-theme" title="Switch theme">
         <BsSun className="toggle-icon" />
         <BsSunFill className="toggle-icon" />
         <button

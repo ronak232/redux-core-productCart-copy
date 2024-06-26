@@ -7,20 +7,24 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
-import { GoogleAuthProvider } from "firebase/auth";
+import { GoogleAuthProvider, FacebookAuthProvider } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB5TFzHslTZ7-Rk5Rg6ZCWHVE7w6fuAo7Q",
-  authDomain: "e-comm-app-6b0df.firebaseapp.com",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH,
+  databaseURL: process.env.REACT_APP_FIREBASE_DB_URL,
+  appId: process.env.REACT_APP_FIREBASE_APPID,
   projectId: "e-comm-app-6b0df",
   storageBucket: "e-comm-app-6b0df.appspot.com",
   messagingSenderId: "723357921913",
-  appId: "1:723357921913:web:1b6ac090fc18593e94daa8",
-  databaseURL: "https://e-comm-app-6b0df-default-rtdb.firebaseio.com/",
 };
-
+console.log(firebaseConfig);
 // GoogleProvide instance for sign-in
 const googleSigninInstanceProvider = new GoogleAuthProvider();
+
+// Facebook Instance Provider for sign-in
+const facebookInstance = new FacebookAuthProvider();
 
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
@@ -30,58 +34,68 @@ const FirebaseContext = createContext(null);
 export const useFirebaseAuth = () => useContext(FirebaseContext);
 
 export const FirebaseProvider = ({ children }) => {
+  const navigate = useNavigate();
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(null);
 
-  const checkedCurrentUserAuth = () => {
-    return new Promise((resolve, reject) => {
-      const currentUser = firebaseAuth.currentUser;
-      if (currentUser) {
-        resolve(currentUser);
-      } else {
-        reject("No logged in user");
-      }
-    });
-  };
-
-  const currentUser = () => {
-    // asynchronous function that listens for changes in the authentication state
-    // through callback function that gets called whenever the authentication state changes.
-    firebaseAuth.onAuthStateChanged((user) => {
+  /*asynchronous function that listens for changes in the authentication statethrough
+    callback function that gets called whenever the authentication state changes.
+  */
+  const unSubscribe = () => {
+    const unsubscribe = firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
-        setIsUserLoggedIn(user);
-        checkedCurrentUserAuth()
-          .then((user) => {
-            console.log("User is logged in:", user.displayName);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        setIsUserLoggedIn(true);
       } else {
-        setIsUserLoggedIn(null);
+        setIsUserLoggedIn(false);
       }
     });
+    return () => unsubscribe();
   };
 
   useEffect(() => {
-    currentUser();
-  });
+    unSubscribe();
+  }, [isUserLoggedIn]);
 
+  /*
+  Method to signIn using google and facebook 
+  */
+
+  // Google Authentication
   const signInwithGoogle = async () => {
     return await signInWithPopup(firebaseAuth, googleSigninInstanceProvider)
-      .then((googleUser) => {
-        const userCredential = GoogleAuthProvider.credentialFromResult(googleUser);
-        const userToken = userCredential.accessToken;
-        const user = googleUser.user;
-        console.log(userToken, user)
+      .then((user) => {
+        if (user) {
+          unSubscribe();
+          navigate("/auth");
+        } else {
+          navigate("/login");
+        }
       })
       .catch((googleError) => {
         // Handling error for google sign
         const credential = GoogleAuthProvider.credentialFromError(googleError);
-        console.log(credential);
+        console.error(credential);
       });
   };
 
-  // create new user with credentials for signup in database whenever new user singup...
+  // Facebook Authentication
+  const facebookAuth = async () => {
+    return await signInWithPopup(firebaseAuth, facebookInstance)
+      .then((facebookUser) => {
+        if (facebookUser.user) {
+          unSubscribe();
+          navigate("/auth");
+        } else {
+          navigate("/login");
+        }
+      })
+      .catch((userError) => {
+        if (userError === "auth/account-exists-with-different-credential") {
+          console.log(userError.customData.email);
+        }
+      });
+  };
+
+  // create new user with credentials for signup in database whenever new user signup...
   const registerNewUser = async (email, passowrd, username) => {
     return await createUserWithEmailAndPassword(firebaseAuth, email, passowrd)
       .then((registerdUserCredentials) => {
@@ -100,7 +114,7 @@ export const FirebaseProvider = ({ children }) => {
       });
   };
 
-  // Login new user after registration.
+  // Login method with e-mail and password.
   const loginUser = async (email, password) => {
     return await signInWithEmailAndPassword(firebaseAuth, email, password)
       .then((userCredential) => {
@@ -125,7 +139,8 @@ export const FirebaseProvider = ({ children }) => {
         loginUser,
         isUserLoggedIn,
         isCurrentUserSignOut,
-        signInwithGoogle
+        signInwithGoogle,
+        facebookAuth,
       }}
     >
       {children}

@@ -8,8 +8,8 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
-import Rating from "../utils/Rating/Rating";
-import CustomStarRating from "../utils/Rating/CustomStarRating";
+import Rating from "../features/Rating/Rating";
+import ReviewAndComment from "../features/Rating/ReviewAndComment";
 
 function ProductDetails({
   allProducts,
@@ -112,8 +112,7 @@ function ProductDetails({
             Add to Cart
           </Button>
           <div>
-            <h1 style={{ color: "skyblue" }}>Rate product</h1>
-            <CustomStarRating />
+            <ReviewAndComment />
           </div>
         </div>
       </div>

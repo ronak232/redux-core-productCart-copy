@@ -1,6 +1,6 @@
 import React from "react";
 import Loginlogo from "../Images/login-logo.png";
-import { useFirebaseAuth } from "../hooks/context/firebase";
+import { useFirebaseAuth } from "../hooks/context/firebase..config.jsx";
 import { getAuth } from "firebase/auth";
 
 function Dashboard() {

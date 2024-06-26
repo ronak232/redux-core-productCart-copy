@@ -1,20 +1,54 @@
-import React from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDebounce } from "../hooks/useDebounce";
 
-function ProductSearchSuggestion({ data, querySearch }) {
-  console.log(data);
+function ProductSearchSuggestion({ data, querySearch, loading }) {
+  const navigate = useNavigate();
+  const debounceSearch = useDebounce(querySearch);
+
+  const productSearch = useMemo(() => {
+    if (!debounceSearch) {
+      return [];
+    }
+    return (
+      data?.filter((item) =>
+        item?.title?.toLowerCase().includes(debounceSearch.toLowerCase())
+      ) || []
+    );
+  }, [debounceSearch, data]);
+
+  // useEffect(() => {
+  //   setSearchProduct(productSearch);
+  // }, [productSearch, searchResultsList]);
+
+  const handleSearchNavigation = (id) => {
+    navigate(`/details/${id}`);
+  };
+
   return (
-    querySearch && (
+    debounceSearch && (
       <div className="search-suggestion-container">
-        <ul className="search-suggestion-list">
-          {querySearch &&
-            data
-              ?.filter((item) =>
-                item.title.toLowerCase().startsWith(querySearch)
-              )
-              .map((item) => {
-                return <li key={item.id}>{item.title}</li>;
+        {loading ? (
+          productSearch.length > 0 ? (
+            <ul className="search-suggestion-list">
+              {productSearch?.map((item) => {
+                return (
+                  <Link
+                    target="_parent"
+                    onClick={() => handleSearchNavigation(item.id)}
+                    key={item.id}
+                  >
+                    <li>{item.title}</li>
+                  </Link>
+                );
               })}
-        </ul>
+            </ul>
+          ) : (
+            <p className="product-notfound">No product matches...</p>
+          )
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
     )
   );

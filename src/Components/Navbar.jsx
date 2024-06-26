@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../Sass/Style.scss";
 import { HiBars3 } from "react-icons/hi2";
@@ -8,29 +8,41 @@ import { RiShoppingCart2Line } from "react-icons/ri";
 import { MdArrowDropDown } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
 import { getAuth } from "firebase/auth";
-import { useFirebaseAuth } from "../hooks/context/firebase";
+import { useFirebaseAuth } from "../hooks/context/firebase..config.jsx";
 import ProductSearchSuggestion from "../features/ProductSearchSuggestion";
+import logo from "../Images/wonderscape-logo.png";
+import totalAmount from "../utils/totalAmount";
 
-function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
+function NavBar({ count, cartItems, data }) {
   const { isUserLoggedIn } = useFirebaseAuth();
   const [mobileToggle, setmobileToggle] = useState(false);
+  const [isSearchBarVisible, setIsSearchBarVisible] = useState(false);
+  // Search product hooks
+  const [querySearch, setQuerySearch] = useState("");
   const toggleHandler = () => {
     setmobileToggle(!mobileToggle);
   };
+
+  const handleMobileSearchBar = () => {
+    setIsSearchBarVisible(!isSearchBarVisible);
+  };
+
+  const changeHandler = (e) => {
+    setQuerySearch(e.target.value);
+    console.log(data);
+  };
+
   return (
     <header>
       <nav className="main-navbar">
         <div>
           <div className="main-navbar-container">
             <a href="/" className="main-navbar-logo">
-              <img
-                src="https://cartzilla.createx.studio/img/logo-dark.png"
-                alt=""
-              />
+              <img src={logo} alt="" />
             </a>
-            <div className="main-navbar-search hide">
+            {/* {!isSearchBarVisible && ( */}
+            <div className={`main-navbar-search`}>
               <form
-                
                 role="search"
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -43,16 +55,24 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
                   type="search"
                   aria-label="Search"
                   placeholder="Search for products"
-                  value={querySearch}
-                  onChange={(e) => setQuerySearch(e.target.value)}
+                  value={querySearch || ""}
+                  onChange={(e) => changeHandler(e)}
                 />
-                <ProductSearchSuggestion data={data} querySearch={querySearch} />
+                <ProductSearchSuggestion
+                  data={data}
+                  querySearch={querySearch}
+                />
               </form>
             </div>
+            {/* )} */}
+
             <div className="main-navbar-productCart">
-              <div className="search__product">
+              <button
+                className="search__product"
+                onClick={handleMobileSearchBar}
+              >
                 <BsSearch className="search__product_icon" />
-              </div>
+              </button>
               <div className="navbar-toggle" onClick={toggleHandler}>
                 <button className="navbar-toggle-btn">
                   {mobileToggle ? (
@@ -64,12 +84,11 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
               </div>
               <Link
                 className="main-navbar-user"
-                to={isUserLoggedIn ? "/signout" : "/login"}
+                to={isUserLoggedIn ? "/auth" : "/login"}
               >
                 <CiUser className="main-navbar-user-icons" />
                 <div className="main-navbar-user-text">
                   <h5>
-                    Hello,
                     {isUserLoggedIn ? (
                       <small>
                         {String(
@@ -90,12 +109,7 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
                 <span className="main-navbar-cart-item-number">{count}</span>
                 <div className="main-navbar-cart-item-text">
                   <small>My Cart</small>
-                  <h3>
-                    $
-                    {cartItems
-                      ?.map((item) => item.price * item.quantity)
-                      .reduce((total, value) => total + value, 0)}
-                  </h3>
+                  <h3>${totalAmount(cartItems)}</h3>
                   <MdArrowDropDown className="main-navbar-cart-item-text-arrow" />
                 </div>
               </Link>
@@ -128,7 +142,10 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
                   </Link>
                 </li>
                 <li className="main-navbar-content-list-items">
-                  <Link className="main-navbar-content-list-item" to="/account">
+                  <Link
+                    className="main-navbar-content-list-item"
+                    to={isUserLoggedIn ? "/auth" : "/account"}
+                  >
                     Account
                   </Link>
                 </li>
@@ -140,6 +157,26 @@ function NavBar({ count, cartItems, querySearch, setQuerySearch, data }) {
               </ul>
             </div>
           </div>
+        </div>
+        <div className={`mobile-search ${isSearchBarVisible ? "show" : ""}`}>
+          <form
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
+            <CiSearch className="main-navbar-search-icon" />
+            <input
+              className="main-navbar-search-bar"
+              name="search"
+              type="search"
+              aria-label="Search"
+              placeholder="Search for products"
+              value={querySearch || ""}
+              onChange={(e) => changeHandler(e)}
+            />
+            <ProductSearchSuggestion data={data} querySearch={querySearch} />
+          </form>
         </div>
       </nav>
     </header>
