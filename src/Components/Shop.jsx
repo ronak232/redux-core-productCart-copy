@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../StyledComponents/Button.style";
 import Spinner from "../utils/Loader/Loading";
 import Rating from "../features/Rating/Rating";
@@ -12,24 +12,37 @@ function Shop({
   allProducts,
   cartFilter,
   setcartFilter,
-  querySearch,
-  productSearch,
   loading,
 }) {
-  const [paginatePages, setPaginatePages] = useState(0); //Current page
+  const [currentPage, setCurrentPages] = useState(0); //Current page
   const navigate = useNavigate();
 
   const handlePageChange = (index) => {
-    setPaginatePages(index);
+    setCurrentPages(index);
+  };
+
+  const handleNext = () => {
+    if (currentPage == allProducts.length - 1) {
+      setCurrentPages(0);
+    } else {
+      setCurrentPages(currentPage + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentPage <= 0 && currentPage !== allProducts.length - 1) {
+      setCurrentPages(allProducts.length - 1);
+    } else {
+      setCurrentPages(currentPage - 1);
+    }
   };
 
   useEffect(() => {
     if (loading) {
       return;
     }
-    setcartFilter(allProducts[paginatePages]);
-    // memoizedSetcartFilter(allProducts[paginatePages]);
-  }, [loading, paginatePages, allProducts]);
+    setcartFilter(allProducts[currentPage]);
+  }, [loading, currentPage, allProducts]);
 
   const detailNavigate = (id) => {
     navigate(`/details/${id}`);
@@ -105,12 +118,12 @@ function Shop({
           </div>
           {!loading && (
             <div className="pagination-btn">
-              <button></button>
+              <button onClick={handlePrev}>Prev</button>
               {allProducts.map((_, index) => {
                 return (
                   <button
                     className={
-                      paginatePages === index ? "active" : "page-btn__number"
+                      currentPage === index ? "active" : "page-btn__number"
                     }
                     key={index}
                     onClick={() => handlePageChange(index)}
@@ -119,6 +132,7 @@ function Shop({
                   </button>
                 );
               })}
+              <button onClick={handleNext}>Next</button>
             </div>
           )}
         </div>

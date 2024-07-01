@@ -28,7 +28,7 @@ function ProductSearchSuggestion({ data, querySearch, loading }) {
   return (
     debounceSearch && (
       <div className="search-suggestion-container">
-        {loading ? (
+        {!loading ? (
           productSearch.length > 0 ? (
             <ul className="search-suggestion-list">
               {productSearch?.map((item) => {

@@ -1,6 +1,6 @@
 function paginate(productShow) {
   const itemPerPage = 10; // Items per page to visible in pagination
-  const totalPagesNumber = Math.ceil(productShow?.length / itemPerPage); // Number of page to show all products
+  const totalPagesNumber = Math.ceil(productShow?.length / itemPerPage); // Number of pages to show all products
 
   const arrayToItemsPerPage = Array.from(
     { length: totalPagesNumber },
